@@ -31,14 +31,14 @@ function Layer(numNeurons, parentLayer, bias) {
   this.neurons = [];
 
   // Create neurons
-  if (bias) {
+  if (typeof bias !== 'undefined') {
     this.neurons.push(new Neuron(bias));
   }
   for (var i = 0; i < numNeurons; ++i) {
     var neuron = new Neuron();
     if (parentLayer) {
       for (var j = 0; j < parentLayer.neurons.length; ++j) {
-        neuron.weights.push((j === 0 ? -1 : 1) * Math.random()); 
+        neuron.weights.push(2*Math.random()-1);//(j === 0 ? -1 : 1) * Math.random()); 
       } 
     }
     this.neurons.push(neuron);
@@ -47,12 +47,7 @@ function Layer(numNeurons, parentLayer, bias) {
 
 Layer.prototype.enumerate = function () {
   for (var i = 0; i < this.neurons.length; ++i) {
-    //console.log("Neuron " + i);
     console.log(this.neurons[i])
-    // var weights = this.neurons[i].weights;
-    // for (var j = 0; j < weights.length; ++j) {
-    //   console.log("\tweight: " + weights[j]);
-    // }
   }
 };
 
@@ -100,7 +95,7 @@ NeuralNetwork.prototype.compute = function () {
     for (var j = 0; j < this.layers[i].neurons.length; ++j) {
       if (i !== this.layers.length-1 && j === 0) j = 1;
       var activation = CalculateActivationValue(this.layers[i].neurons[j], this.layers[i-1]);
-      var out = Sigmoid(activation);
+      var out = Step(activation);
       console.log(i + ", " + j + ": " + out);
       this.layers[i].neurons[j].output = out;
     }
@@ -148,6 +143,7 @@ function Break(numLines, character) {
 }
 
 
+
 // Run the network
 
 var nn = new NeuralNetwork([3,5,5,2], [1,1,1]);
@@ -155,7 +151,7 @@ nn.enumerate();
 
 Break(3,'*');
 
-nn.input([1,0,0]);
+nn.input([1,0,1]);
 nn.enumerate();
 
 Break(3,'@');
